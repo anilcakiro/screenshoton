@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Thin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-SemiBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Display";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./fonts/InterDisplay-Black.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src:
+    url("./fonts/InterVariable.woff2") format("woff2-variations"),
+    url("./fonts/InterVariable.woff2") format("woff2");
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-variable: "Inter Variable", sans-serif;
+  --font-variable: "Inter Display", sans-serif;
+  --font-sans: "Inter Display";
+
+  --color-primary: #ff541a;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-window-b: var(--window-b);
+  --color-sdbr-disabled: var(--sdbr-text-disabled);
+  --color-sdbr-active: var(--sdbr-text-active);
+  --color-close-button: var(--close-button);
+  --color-minus-button: var(--minus-button);
+  --color-dl: var(--dl);
+  --color-card: var(--card);
+  --color-card-header: var(--card-header)
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: #202020;
+  --window-b: #ebebeb;
+  --sdbr-text-disabled: rgb(90, 90, 90);
+  --sdbr-text-active: #fff;
+  --close-button: #BF2A2A;
+  --minus-button: #e1e1e1;
+  --dl: #fff;
+  --card: #fcfcfc;
+  --card-header: #1e1e1e;
+
+}
+
+.dark {
+  --background: #0f0f0f;
+  --foreground: #fff;
+  --window-b: #181818;
+  --sdbr-text-disabled: #9f9f9f;
+  --dl: #202020;
+  --card: #141414;
+  --card-header: #1e1e1e;
+}
+
+@layer base {
+  * {
+    @apply select-none;
+  }
+  body {
+    @apply bg-transparent;
+  }
+  html {
+    @apply bg-transparent font-sans text-foreground;
+  }
+}
+
+.overlay-img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+.keycap {
+  border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+  background: color-mix(in oklab, var(--foreground) 2%, var(--dl));
+  color: color-mix(in oklab, var(--foreground) 90%, transparent);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--foreground) 5%, transparent);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dark .keycap {
+  box-shadow: none;
+}
+
+.keycap-active,
+.dark .keycap-active {
+  border-color: color-mix(in oklab, var(--color-primary) 45%, transparent) !important;
+  background: color-mix(in oklab, var(--color-primary) 14%, var(--dl)) !important;
+  color: var(--color-primary) !important;
+  box-shadow: none !important;
+}
+
+.hero-glow {
+  background: radial-gradient(
+    ellipse 55% 60% at 50% 55%,
+    color-mix(in oklab, var(--color-primary) 16%, transparent),
+    transparent 72%
+  );
+}
+
+.is-recording {
+  border-color: color-mix(in oklab, var(--color-primary) 45%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none !important;
+  }
+}
+
+
