@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AppVersion = "1.0.0"
+	AppVersion = "1.0.1"
 	UpdateRepo = "anilcakiro/screenshoton"
 )
 

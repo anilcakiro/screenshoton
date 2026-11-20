@@ -59,7 +59,7 @@ wails3 build
 wails3 package INSTALL_SCOPE=user
 ```
 
-`bin/ScreenshotOn-amd64-installer.exe` üretir; `%LocalAppData%` altına yönetici izni olmadan kurulur.
+`bin/ScreenshotOn-Setup.exe` üretir; `%LocalAppData%` altına yönetici izni olmadan kurulur.
 
 ## Proje yapısı
 
@@ -80,19 +80,27 @@ wails3 package INSTALL_SCOPE=user
 
 Her release şu asset'leri içermelidir:
 
-| Asset                              | Amaç                                      |
-| ---------------------------------- | ----------------------------------------- |
-| `screenshoton_windows_amd64.exe`   | Düz binary — uygulama içi updater bunu kullanır |
-| `SHA256SUMS`                       | Güncelleme doğrulaması için checksum dosyası |
-| `ScreenshotOn-amd64-installer.exe` | NSIS installer — ilk kurulum için          |
+| Asset                                   | Amaç                                      |
+| --------------------------------------- | ----------------------------------------- |
+| `ScreenshotOn-Setup.exe`                | NSIS installer — ilk kurulum için          |
+| `ScreenshotOn-Update-windows-amd64.exe` | Düz binary — uygulama içi updater bunu kullanır |
+| `SHA256SUMS`                            | Güncelleme doğrulaması için checksum dosyası |
 
-Checksum dosyasını build sonrası oluşturun:
+Üç asset'in hepsini tek komutla üretin:
+
+```sh
+wails3 task windows:release SIGN_THUMBPRINT=<sertifika-thumbprint>
+```
+
+Bu komut production build'i çalıştırır, NSIS installer'ı paketler, binary'yi `ScreenshotOn-Update-windows-amd64.exe` olarak kopyalar, iki exe'yi de imzalar ve `SHA256SUMS` dosyasını üretir — hepsi `bin/` içinde. Authenticode imzasını atlamak için `SIGN_THUMBPRINT` parametresini vermeyin.
+
+Alternatif olarak checksum'u build sonrası elle üretebilirsiniz:
 
 ```sh
 # Windows (PowerShell)
-Get-FileHash .\screenshoton_windows_amd64.exe -Algorithm SHA256
+Get-FileHash .\ScreenshotOn-Update-windows-amd64.exe -Algorithm SHA256
 # veya sha256sum ile:
-sha256sum screenshoton_windows_amd64.exe > SHA256SUMS
+sha256sum ScreenshotOn-Update-windows-amd64.exe > SHA256SUMS
 ```
 
 Tag'lemeden önce `services/update.go` içindeki `AppVersion`'ı yükseltin; updater karşılaştırmayı buna göre yapar.

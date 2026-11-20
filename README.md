@@ -59,7 +59,7 @@ Produces `bin/screenshoton.exe`. Frontend bindings under `frontend/bindings/` ar
 wails3 package INSTALL_SCOPE=user
 ```
 
-Produces `bin/ScreenshotOn-amd64-installer.exe`, installed per-user under `%LocalAppData%` without admin rights.
+Produces `bin/ScreenshotOn-Setup.exe`, installed per-user under `%LocalAppData%` without admin rights.
 
 ## Project structure
 
@@ -80,19 +80,27 @@ Produces `bin/ScreenshotOn-amd64-installer.exe`, installed per-user under `%Loca
 
 Each release should provide these assets:
 
-| Asset                              | Purpose                                   |
-| ---------------------------------- | ----------------------------------------- |
-| `screenshoton_windows_amd64.exe`   | Raw binary — used by the in-app updater   |
-| `SHA256SUMS`                       | Checksum sidecar for update verification  |
-| `ScreenshotOn-amd64-installer.exe` | NSIS installer — first-time installation  |
+| Asset                                   | Purpose                                   |
+| --------------------------------------- | ----------------------------------------- |
+| `ScreenshotOn-Setup.exe`                | NSIS installer — first-time installation  |
+| `ScreenshotOn-Update-windows-amd64.exe` | Raw binary — used by the in-app updater   |
+| `SHA256SUMS`                            | Checksum sidecar for update verification  |
 
-Generate the checksum file after building:
+Produce all three assets in one command:
+
+```sh
+wails3 task windows:release SIGN_THUMBPRINT=<your-cert-thumbprint>
+```
+
+This runs the production build, packages the NSIS installer, copies the binary to `ScreenshotOn-Update-windows-amd64.exe`, signs both executables, and generates `SHA256SUMS` — all inside `bin/`. Omit `SIGN_THUMBPRINT` to skip Authenticode signing.
+
+Alternatively, generate the checksum manually after building:
 
 ```sh
 # Windows (PowerShell)
-Get-FileHash .\screenshoton_windows_amd64.exe -Algorithm SHA256
+Get-FileHash .\ScreenshotOn-Update-windows-amd64.exe -Algorithm SHA256
 # or with sha256sum:
-sha256sum screenshoton_windows_amd64.exe > SHA256SUMS
+sha256sum ScreenshotOn-Update-windows-amd64.exe > SHA256SUMS
 ```
 
 Bump `AppVersion` in `services/update.go` before tagging so the updater compares correctly.

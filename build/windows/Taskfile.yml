@@ -193,3 +193,27 @@ tasks:
       INSTALL_SCOPE: '{{.INSTALL_SCOPE | default "machine"}}'
     cmds:
       - wails3 tool sign --input "build/windows/nsis/{{.APP_NAME}}-installer.exe" {{if .SIGN_CERTIFICATE}}--certificate "{{.SIGN_CERTIFICATE}}"{{end}} {{if .SIGN_THUMBPRINT}}--thumbprint "{{.SIGN_THUMBPRINT}}"{{end}} {{if .TIMESTAMP_SERVER}}--timestamp "{{.TIMESTAMP_SERVER}}"{{end}}
+
+  release:
+    summary: Builds and prepares all GitHub release assets
+    desc: |
+      Runs the full release pipeline: production build, NSIS installer,
+      updater binary (ScreenshotOn-Update-windows-amd64.exe), optional
+      Authenticode signing, and SHA256SUMS checksum file.
+      Usage: wails3 task windows:release SIGN_THUMBPRINT=<thumbprint>
+    deps:
+      - task: package
+        vars:
+          INSTALL_SCOPE: '{{.INSTALL_SCOPE | default "user"}}'
+    vars:
+      ARCH: amd64
+      RELEASE_EXE: '{{.BIN_DIR}}/ScreenshotOn-Update-windows-amd64.exe'
+      PKG_INSTALLER: '{{.BIN_DIR}}/ScreenshotOn-amd64-installer.exe'
+      INSTALLER_EXE: '{{.BIN_DIR}}/ScreenshotOn-Setup.exe'
+    cmds:
+      - powershell -NoProfile -Command "Move-Item '{{.ROOT_DIR}}/{{.PKG_INSTALLER}}' '{{.ROOT_DIR}}/{{.INSTALLER_EXE}}' -Force"
+      - powershell -NoProfile -Command "Copy-Item '{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}.exe' '{{.ROOT_DIR}}/{{.RELEASE_EXE}}' -Force"
+      - '{{if .SIGN_THUMBPRINT}}wails3 tool sign --input "{{.RELEASE_EXE}}" --thumbprint "{{.SIGN_THUMBPRINT}}"{{end}}'
+      - '{{if .SIGN_THUMBPRINT}}wails3 tool sign --input "{{.INSTALLER_EXE}}" --thumbprint "{{.SIGN_THUMBPRINT}}"{{end}}'
+      - powershell -NoProfile -Command "Set-Content '{{.ROOT_DIR}}/{{.BIN_DIR}}/SHA256SUMS' -Value (((Get-FileHash '{{.ROOT_DIR}}/{{.RELEASE_EXE}}' -Algorithm SHA256).Hash.ToLower()) + '  ScreenshotOn-Update-windows-amd64.exe') -Encoding ascii -NoNewline"
+      - powershell -NoProfile -Command "Get-ChildItem '{{.ROOT_DIR}}/{{.BIN_DIR}}' -Include *.exe,SHA256SUMS -Recurse | Select-Object Name,Length"
