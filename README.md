@@ -2,6 +2,8 @@
 
 Fast, lightweight screenshot tool for Windows. Select any region, copy it to the clipboard or save it as PNG, and browse your capture history — all from a global hotkey.
 
+[🇹🇷 Türkçe](README.tr.md)
+
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D4)
 ![Go](https://img.shields.io/badge/Go-1.26-00ADD8)
 ![Wails](https://img.shields.io/badge/Wails-v3-1E90FF)
@@ -9,39 +11,36 @@ Fast, lightweight screenshot tool for Windows. Select any region, copy it to the
 
 ## Features
 
-- **Region capture** — fullscreen overlay with free-form selection, zoom loupe, and live dimensions
-- **Lossless Picture** — clipboard copy and file export without recompression artifacts
-- **Configurable actions** — choose what happens after selection: manual, copy, or save
-- **History gallery** — thumbnails, lightbox preview, date grouping, delete, and re-copy
-- **Global hotkeys** — every shortcut is remappable and persisted
-- **Turkish & English** — automatic locale detection with manual override
+- **Region capture** — Fullscreen overlay with free-form selection, zoom loupe, and live dimensions
+- **Lossless PNG** — Direct clipboard copy and file export without recompression
+- **History gallery** — Thumbnails, lightbox preview, date grouping, and quick re-copy
+- **Global hotkeys** — Fully remappable shortcuts with persistent settings
+- **System-aware UI** — Light, dark, or Windows-synced theme with Turkish & English support
+- **Auto-start & Updates** — Optional launch at sign-in and in-app updates via GitHub Releases
 
-## Getting started
+## Tech Stack
+
+- **Backend:** Go, [Wails v3](https://v3.wails.io)
+- **Frontend:** React 19, TypeScript, Tailwind CSS
+- **Packaging:** NSIS Installer (per-user, no UAC required)
+
+## Getting Started
 
 ### Prerequisites
 
 - [Go](https://go.dev/dl/) 1.26+
 - [Node.js](https://nodejs.org/) 20+
 - [Wails3 CLI](https://v3.wails.io/getting-started/installation) (`wails3`)
-- [NSIS](https://nsis.sourceforge.io) — only needed for installer packaging
+- [NSIS](https://nsis.sourceforge.io) *(optional, for building the installer)*
 
-### Installer
+### Commands
 
 ```sh
-wails3 package
-```
+# Run in development mode
+wails3 dev
 
-## Project structure
+# Build binary (outputs to bin/)
+wails3 build
 
-```
-├── main.go               # App entry point, window, updater wiring
-├── services/             # Go backend services (capture, settings, history, hotkeys, updates)
-├── frontend/             # React + TypeScript frontend
-│   └── src/
-│       ├── pages/        # Home, Overlay, Settings, Selection, KeyboardShortcuts
-│       ├── layouts/      # App shell and sidebar
-│       ├── stores/       # Zustand state
-│       └── i18n/         # tr.json / en.json translations
-├── build/                # Icons, Windows metadata, NSIS templates, Taskfiles
-└── Taskfile.yml          # Wails build tasks
-```
+# Build per-user installer
+wails3 package INSTALL_SCOPE=user
