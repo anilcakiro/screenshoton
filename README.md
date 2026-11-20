@@ -25,27 +25,11 @@ Fast, lightweight screenshot tool for Windows. Select any region, copy it to the
 - [Wails3 CLI](https://v3.wails.io/getting-started/installation) (`wails3`)
 - [NSIS](https://nsis.sourceforge.io) — only needed for installer packaging
 
-### Development
-
-```sh
-wails3 dev
-```
-
-### Build
-
-```sh
-wails3 build
-```
-
-Produces `bin/screenshoton.exe`. Frontend bindings under `frontend/bindings/` are generated automatically by Wails — do not edit or commit them.
-
 ### Installer
 
 ```sh
-wails3 package INSTALL_SCOPE=user
+wails3 package
 ```
-
-Produces `bin/ScreenshotOn-amd64-installer.exe`, installed per-user under `%LocalAppData%` without admin rights.
 
 ## Project structure
 
