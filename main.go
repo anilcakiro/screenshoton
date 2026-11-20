@@ -4,7 +4,6 @@ import (
 	"embed"
 
 	"log"
-	"time"
 
 	"wareon/services"
 
@@ -19,16 +18,22 @@ var assets embed.FS
 //go:embed build/windows/icon.ico
 var icon []byte
 
-func init() {
-	application.RegisterEvent[string]("time")
-}
-
 func main() {
 	shotSvc := services.NewScreenShotService()
 	shotSvc.PreloadSettings()
 
+	var window *application.WebviewWindow
 	app := application.New(application.Options{
-		Name:        "ScreenshotOn",
+		Name: "ScreenshotOn",
+		SingleInstance: &application.SingleInstanceOptions{
+			UniqueID: "dev.wareon.screenshoton",
+			OnSecondInstanceLaunch: func(application.SecondInstanceData) {
+				if window != nil {
+					window.Show()
+					window.Focus()
+				}
+			},
+		},
 		Services: []application.Service{
 			application.NewService(services.ThemeService()),
 			application.NewService(shotSvc),
@@ -55,24 +60,19 @@ func main() {
 		log.Printf("updater provider: %v", err)
 	}
 
-	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title:  "Window 1",
-		Width:  1000,
-		Height: 618,
-		Mac: application.MacWindow{
-			InvisibleTitleBarHeight: 50,
-			Backdrop:                application.MacBackdropTranslucent,
-			TitleBar:                application.MacTitleBarHiddenInset,
-		},
-		BackgroundColour: application.NewRGB(6, 7, 15),
-		URL:              "/",
-		Frameless:        true,
-		BackgroundType:   application.BackgroundTypeTransparent,
-		DisableResize:    true,
+	window = app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:             "Dashboard",
+		Width:             1000,
+		Height:            618,
+		BackgroundColour:  application.NewRGB(6, 7, 15),
+		URL:               "/",
+		Frameless:         true,
+		BackgroundType:    application.BackgroundTypeTransparent,
+		DisableResize:     true,
 		IgnoreMouseEvents: false,
 		Windows: application.WindowsWindow{
 			DisableFramelessWindowDecorations: true,
-			WebView2CompositionHosting: true,
+			WebView2CompositionHosting:        true,
 		},
 	})
 
@@ -87,13 +87,6 @@ func main() {
 		}
 	})
 
-	go func() {
-		for {
-			now := time.Now().Format(time.RFC1123)
-			app.Event.Emit("time", now)
-			time.Sleep(time.Second)
-		}
-	}()
 	err := app.Run()
 	if err != nil {
 		log.Fatal(err)

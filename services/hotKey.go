@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	WM_HOTKEY     = 0x0312
-	hotKeyID      = 1
-	modNoRepeat   = 0x4000
-	pmRemove      = 0x0001
+	WM_HOTKEY   = 0x0312
+	hotKeyID    = 1
+	modNoRepeat = 0x4000
+	pmRemove    = 0x0001
 )
 
 var (
@@ -78,6 +78,6 @@ func (t *ScreenshotService) startGlobalHotkey() {
 				go t.TriggerCapture()
 			}
 		}
-		time.Sleep(25 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 }

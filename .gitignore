@@ -1,0 +1,9 @@
+.task
+.wails
+bin
+*.exe
+*.syso
+frontend/dist
+frontend/node_modules
+frontend/bindings
+publish.ps1

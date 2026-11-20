@@ -197,7 +197,7 @@ func (s *ScreenshotService) SaveSettings(next AppSettings) error {
 		default:
 		}
 	}
-	applyStartupSetting(cur.StartWithWindows)
+	s.applyStartupSetting(cur.StartWithWindows)
 	return nil
 }
 func (s *ScreenshotService) PreloadSettings() {
@@ -208,7 +208,7 @@ func (s *ScreenshotService) applyLoadSettings() {
 	s.settings = loadSettings()
 	settingsMu.Unlock()
 	cur := s.GetSettings()
-	applyStartupSetting(cur.StartWithWindows)
+	s.applyStartupSetting(cur.StartWithWindows)
 	log.Printf("settings loaded: autoSave=%v theme=%s saveDir=%q afterSelect=%s",
 		cur.AutoSavePNG, cur.Theme, cur.SaveDir, cur.AfterSelect)
 }
@@ -224,4 +224,18 @@ func (s *ScreenshotService) autoSavePNG() bool {
 	settingsMu.Lock()
 	defer settingsMu.Unlock()
 	return s.settings.AutoSavePNG
+}
+func (s *ScreenshotService) applyStartupSetting(enabled bool) {
+	if s.app == nil || s.app.Autostart == nil {
+		return
+	}
+	if enabled {
+		if err := s.app.Autostart.Enable(); err != nil {
+			log.Printf("autostart enable: %v", err)
+		}
+		return
+	}
+	if err := s.app.Autostart.Disable(); err != nil {
+		log.Printf("autostart disable: %v", err)
+	}
 }

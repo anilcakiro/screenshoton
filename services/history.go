@@ -74,6 +74,9 @@ func thumbnailDataURL(src image.Image, targetW int) (string, error) {
 	if height < 1 {
 		height = 1
 	}
+	if rgba, ok := src.(*image.RGBA); ok {
+		return pngDataURL(scaleRGBAFast(rgba, width, height))
+	}
 	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 	for ty := 0; ty < height; ty++ {
 		sy := sb.Min.Y + ty*h/height
@@ -82,4 +85,29 @@ func thumbnailDataURL(src image.Image, targetW int) (string, error) {
 		}
 	}
 	return pngDataURL(dst)
+}
+
+func scaleRGBAFast(src *image.RGBA, dw, dh int) *image.RGBA {
+	sb := src.Bounds()
+	sw, sh := sb.Dx(), sb.Dy()
+	dst := image.NewRGBA(image.Rect(0, 0, dw, dh))
+	sp := src.Pix
+	stride := src.Stride
+	dp := dst.Pix
+	dstride := dst.Stride
+	for y := 0; y < dh; y++ {
+		sy := sb.Min.Y + y*sh/dh
+		srow := (sy-sb.Min.Y)*stride + sb.Min.X*4
+		drow := y * dstride
+		for x := 0; x < dw; x++ {
+			sx := sb.Min.X + x*sw/dw
+			si := srow + (sx-sb.Min.X)*4
+			di := drow + x*4
+			dp[di] = sp[si]
+			dp[di+1] = sp[si+1]
+			dp[di+2] = sp[si+2]
+			dp[di+3] = sp[si+3]
+		}
+	}
+	return dst
 }
