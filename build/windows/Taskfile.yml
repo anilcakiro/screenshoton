@@ -216,4 +216,5 @@ tasks:
       - '{{if .SIGN_THUMBPRINT}}wails3 tool sign --input "{{.RELEASE_EXE}}" --thumbprint "{{.SIGN_THUMBPRINT}}"{{end}}'
       - '{{if .SIGN_THUMBPRINT}}wails3 tool sign --input "{{.INSTALLER_EXE}}" --thumbprint "{{.SIGN_THUMBPRINT}}"{{end}}'
       - powershell -NoProfile -Command "Set-Content '{{.ROOT_DIR}}/{{.BIN_DIR}}/SHA256SUMS' -Value (((Get-FileHash '{{.ROOT_DIR}}/{{.RELEASE_EXE}}' -Algorithm SHA256).Hash.ToLower()) + '  ScreenshotOn-Update-windows-amd64.exe') -Encoding ascii -NoNewline"
+      - powershell -NoProfile -Command "Remove-Item '{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}.exe' -Force -ErrorAction SilentlyContinue"
       - powershell -NoProfile -Command "Get-ChildItem '{{.ROOT_DIR}}/{{.BIN_DIR}}' -Include *.exe,SHA256SUMS -Recurse | Select-Object Name,Length"
