@@ -151,9 +151,3 @@ sha256sum ScreenshotOn-Update-windows-amd64.exe > SHA256SUMS
 ```
 
 Bump `AppVersion` in `services/update.go` before tagging so the updater compares correctly.
-
-## License
-
-This project is **source-available** under a custom license. You may use, study, inspect, download, and build the software for personal and commercial purposes, but you may **not** sell, redistribute, or publish the software, its binaries, installers, or modified versions.
-
-See [LICENSE](LICENSE) for the full terms. For licensing inquiries: https://wareon.dev
