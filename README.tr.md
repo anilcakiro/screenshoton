@@ -1,6 +1,8 @@
 # ScreenshotOn
 
-Windows için hızlı ve hafif ekran görüntüsü aracı. Herhangi bir bölgeyi seçin, panoya kopyalayın veya PNG olarak kaydedin — tümü tek bir genel kısayoldan.
+Windows için hafif, hızlı ve bir ekran görüntüsü aracı.
+
+Tek bir genel kısayol ile ekranın herhangi bir bölgesini yakalayın; kayıpsız PNG olarak panoya kopyalayın veya kaydedin, isteğe bağlı olarak çizim araçlarıyla işaretleyin.
 
 [🇬🇧 English](README.md)
 
@@ -9,17 +11,62 @@ Windows için hızlı ve hafif ekran görüntüsü aracı. Herhangi bir bölgeyi
 ![Wails](https://img.shields.io/badge/Wails-v3-1E90FF)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
 
-## Özellikler
+---
 
-- **Bölge yakalama** — serbest seçim, büyüteç ve canlı boyut gösterimi olan tam ekran overlay
-- **Kayıpsız PNG** — pano kopyası ve dosya aktarımı yeniden sıkıştırma artefaktı olmadan
-- **Yapılandırılabilir eylemler** — seçim sonrası davranış: manuel, kopyala veya kaydet
-- **Geçmiş galerisi** — küçük resimler, lightbox önizleme, tarih grupları, silme ve yeniden kopyalama
-- **Genel kısayollar** — her kısayol yeniden atanabilir ve kalıcı
-- **Sistem temasına uyum** — açık, koyu veya Windows'u takip et
-- **Türkçe & İngilizce** — otomatik dil algılama, manuel seçim desteği
-- **Windows ile başlat** — isteğe bağlı oturum açılışında çalıştırma
-- **Kendi kendine güncelleme** — GitHub Releases üzerinden kontrol ve uygulama içi kurulum
+## Yetenekler
+
+### Yakalama
+- Tam ekran overlay üzerinde serbest biçimli bölge seçimi
+- Canlı boyut göstergesi ve 8 yönlü yeniden boyutlandırma
+- DPI ölçeklemesi yüksek ortamlarda tutarlı davranış
+- Kayıpsız PNG çıktısı — önizleme ve dışa aktarımda kalite kaybı yok
+
+### Çizim ve Anotasyon
+- Beş araç: kalem, ok, dikdörtgen, elips ve otomatik numaralı pin
+- Yedi renk, geri alma ve toplu temizleme
+- Anotasyonlar seçim bölgesiyle birlikte panoya veya dosyaya aktarılır
+
+### Geçmiş
+- Yakalamalar otomatik olarak geçmişe eklenir
+- Küçük resim görünümü, tarih bazlı gruplama ve lightbox önizleme
+- Tek tek veya toplu silme, geçmişten yeniden kopyalama
+
+### Paylaşım
+- Tek tıkla panoya kopyalama veya PNG olarak kaydetme
+- Seçim sonrası davranış otomatik tetiklenebilir
+
+### Platform
+- Windows ile otomatik başlatma
+- Sistem tepsisi entegrasyonu
+- Uygulama içinden doğrulamalı güncelleme
+
+---
+
+## Ayarlanabilir Özellikler
+
+| Ayar | Açıklama |
+|---|---|
+| Genel kısayol | Varsayılan `PrintScreen` — overlay'i açar; tüm kısayollar yeniden atanabilir |
+| Overlay kısayolları | Kopyala, kaydet ve iptal tuşları özelleştirilebilir |
+| Seçim sonrası davranış | Manuel, otomatik kopyala veya otomatik kaydet |
+| Kayıt klasörü | Yerel dizin seçici ile değiştirilebilir (varsayılan: `Pictures\ScreenshotOn`) |
+| Tema | Açık, koyu veya Windows sistem temasını takip etme |
+| Dil | Türkçe veya İngilizce — PC diline göre otomatik algılama |
+| Windows ile başlat | Oturum açılışında otomatik çalıştırma |
+| Overlay'i önceden hazırla | Açılıştan ~10 sn sonra overlay penceresini gizlice belleğe alır; ilk ekran görüntüsü neredeyse anında açılır.<br>• **Kapalı** (varsayılan): overlay ilk kullanımda oluşturulur, RAM harcamaz<br>• **Açık**: ~200 MB ek RAM karşılığında anında açılış |
+
+---
+
+## Sistem Gereksinimleri
+
+- Windows 10/11 (x64)
+- Microsoft Edge WebView2 Runtime (Windows 11'de yerleşik)
+
+## Kurulum
+
+1. [GitHub Releases](https://github.com/anilcakiro/screenshoton/releases/latest) sayfasından `ScreenshotOn-Setup.exe` dosyasını indirin.
+2. Yürütülebilir dosyayı çalıştırın — kurulum `%LocalAppData%\Programs\Wareon\ScreenshotOn` altına yapılır, yönetici izni gerekmez.
+3. `PrintScreen` tuşuna basarak overlay'i başlatın, bölgeyi seçin ve kopyalayın.
 
 ## Teknoloji
 

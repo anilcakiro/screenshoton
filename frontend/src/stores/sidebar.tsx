@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Brush, LayoutDashboard } from 'lucide-react'
+import { Brush, LayoutDashboard, Settings } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const DEFAULT_MENU: SidebarMenuItem[] = [
@@ -13,7 +13,7 @@ const DEFAULT_MENU: SidebarMenuItem[] = [
     {
         id: 'settings',
         label: 'Settings',
-        icon: LayoutDashboard,
+        icon: Settings,
         children: [
             { id: "general", label: "Genel", href: "/settings" },
             { id: "selection", label: "Seçim", href: "/settings/selection" },

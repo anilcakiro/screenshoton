@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
 type AppSettings struct {
@@ -21,6 +22,7 @@ type AppSettings struct {
 	SaveDir           string `json:"saveDir"`
 	ShowCopiedHistory bool   `json:"showCopiedHistory"`
 	StartWithWindows  bool   `json:"startWithWindows"`
+	PrewarmOverlay    bool   `json:"prewarmOverlay"`
 }
 
 const (
@@ -198,6 +200,12 @@ func (s *ScreenshotService) SaveSettings(next AppSettings) error {
 		}
 	}
 	s.applyStartupSetting(cur.StartWithWindows)
+	if !prev.PrewarmOverlay && cur.PrewarmOverlay {
+		go func() {
+			time.Sleep(2 * time.Second)
+			s.maybePrewarmOverlay()
+		}()
+	}
 	return nil
 }
 func (s *ScreenshotService) PreloadSettings() {

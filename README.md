@@ -1,6 +1,8 @@
 # ScreenshotOn
 
-Fast, lightweight screenshot tool for Windows. Select any region, copy it to the clipboard or save it as PNG, and browse your capture history — all from a global hotkey.
+A fast, lightweight screenshot tool for Windows.
+
+Capture any region of your screen with a single global hotkey; copy it to the clipboard or save it as a lossless PNG, and optionally annotate it with drawing tools.
 
 [🇹🇷 Türkçe](README.tr.md)
 
@@ -9,19 +11,64 @@ Fast, lightweight screenshot tool for Windows. Select any region, copy it to the
 ![Wails](https://img.shields.io/badge/Wails-v3-1E90FF)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
 
+---
+
 ## Features
 
-- **Region capture** — fullscreen overlay with free-form selection, zoom loupe, and live dimensions
-- **Lossless PNG** — clipboard copy and file export without recompression artifacts
-- **Configurable actions** — choose what happens after selection: manual, copy, or save
-- **History gallery** — thumbnails, lightbox preview, date grouping, delete, and re-copy
-- **Global hotkeys** — every shortcut is remappable and persisted
-- **System-aware theming** — light, dark, or follow Windows
-- **Turkish & English** — automatic locale detection with manual override
-- **Start with Windows** — optional launch at sign-in
-- **Self-updating** — checks GitHub Releases and installs updates in-app
+### Capture
+- Free-form region selection on a fullscreen overlay
+- Live dimension indicator and 8-way resizing
+- Consistent behavior on high-DPI displays
+- Lossless PNG output — no quality loss in preview or export
 
-## Tech stack
+### Drawing and Annotation
+- Five tools: pen, arrow, rectangle, ellipse, and auto-numbered pin
+- Seven colors, undo, and clear-all
+- Annotations are exported together with the selection to clipboard or file
+
+### History
+- Captures are automatically added to history
+- Thumbnail grid, date-based grouping, and lightbox preview
+- Delete individually or all at once, re-copy from history
+
+### Sharing
+- One-click copy to clipboard or save as PNG
+- Post-selection behavior can be triggered automatically
+
+### Platform
+- Launch at Windows sign-in
+- System tray integration
+- Verified in-app updates
+
+---
+
+## Configurable Settings
+
+| Setting | Description |
+|---|---|
+| Global hotkey | Default `PrintScreen` — opens the overlay; all shortcuts are remappable |
+| Overlay shortcuts | Customize copy, save, and cancel keys |
+| Post-selection behavior | Manual, auto-copy, or auto-save |
+| Save folder | Changeable via a local directory picker (default: `Pictures\ScreenshotOn`) |
+| Theme | Light, dark, or follow the Windows system theme |
+| Language | Turkish or English — auto-detected from the PC locale |
+| Start with Windows | Run automatically at sign-in |
+| Preload overlay | Silently loads the overlay window into memory ~10s after startup; the first screenshot opens almost instantly.<br>• **Off** (default): the overlay is created on first use and consumes no RAM<br>• **On**: instant open in exchange for ~200 MB of additional RAM |
+
+---
+
+## System Requirements
+
+- Windows 10/11 (x64)
+- Microsoft Edge WebView2 Runtime (built into Windows 11)
+
+## Installation
+
+1. Download `ScreenshotOn-Setup.exe` from [GitHub Releases](https://github.com/anilcakiro/screenshoton/releases/latest).
+2. Run the executable — it installs to `%LocalAppData%\Programs\Wareon\ScreenshotOn` without admin rights.
+3. Press `PrintScreen` to open the overlay, select a region, and copy it.
+
+## Tech Stack
 
 | Layer    | Technology                        |
 | -------- | --------------------------------- |
@@ -30,7 +77,7 @@ Fast, lightweight screenshot tool for Windows. Select any region, copy it to the
 | Package  | Wails NSIS installer (per-user, no UAC) |
 | Updates  | GitHub Releases + Wails updater   |
 
-## Getting started
+## Getting Started
 
 ### Prerequisites
 
@@ -61,7 +108,7 @@ wails3 package INSTALL_SCOPE=user
 
 Produces `bin/ScreenshotOn-Setup.exe`, installed per-user under `%LocalAppData%` without admin rights.
 
-## Project structure
+## Project Structure
 
 ```
 ├── main.go               # App entry point, window, updater wiring
@@ -76,7 +123,7 @@ Produces `bin/ScreenshotOn-Setup.exe`, installed per-user under `%LocalAppData%`
 └── Taskfile.yml          # Wails build tasks
 ```
 
-## Releases & updates
+## Releases & Updates
 
 Each release should provide these assets:
 

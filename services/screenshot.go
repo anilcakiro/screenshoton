@@ -25,8 +25,9 @@ import (
 )
 
 type ScreenshotService struct {
-	lastCapture  *image.RGBA
-	dataURLCache atomic.Value
+	lastCapture     *image.RGBA
+	dataURLCache    atomic.Value
+	pngDataURLCache atomic.Value
 	everShown    atomic.Bool
 
 	overlayPaintPending atomic.Bool
@@ -87,6 +88,23 @@ func (s *ScreenshotService) GetLastCaptureDataURL() (string, error) {
 	return dataURL, nil
 }
 
+func (s *ScreenshotService) GetLastCapturePNG() (string, error) {
+	if cached, ok := s.pngDataURLCache.Load().(string); ok && cached != "" {
+		return cached, nil
+	}
+	if s.lastCapture == nil {
+		return "", nil
+	}
+
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, s.lastCapture); err != nil {
+		return "", err
+	}
+	dataURL := "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+	s.pngDataURLCache.Store(dataURL)
+	return dataURL, nil
+}
+
 func (s *ScreenshotService) cropLastCapture(x, y, w, h int) (*image.RGBA, error) {
 	if s.lastCapture == nil {
 		return nil, errors.New("no capture in memory")
@@ -116,7 +134,10 @@ func (s *ScreenshotService) ExtractRegion(x, y, w, h int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	return s.finishCopy(rgba)
+}
 
+func (s *ScreenshotService) finishCopy(rgba *image.RGBA) (string, error) {
 	if err := CopyImageToClipboard(rgba); err != nil {
 		return "", err
 	}
@@ -184,7 +205,10 @@ func (s *ScreenshotService) ExtractRegionToFile(x, y, w, h int) (string, error) 
 	if err != nil {
 		return "", err
 	}
+	return s.finishSave(rgba)
+}
 
+func (s *ScreenshotService) finishSave(rgba *image.RGBA) (string, error) {
 	path, err := writeLosslessPNG(rgba, s.saveDir())
 	if err != nil {
 		return "", err
@@ -197,6 +221,40 @@ func (s *ScreenshotService) ExtractRegionToFile(x, y, w, h int) (string, error) 
 	}
 	log.Printf("Region saved lossless: %s", path)
 	return path, nil
+}
+
+func decodePNGBase64(data string) (*image.RGBA, error) {
+	if i := strings.Index(data, ","); i >= 0 && strings.HasPrefix(data, "data:") {
+		data = data[i+1:]
+	}
+	raw, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return nil, fmt.Errorf("base64 decode: %w", err)
+	}
+	img, err := png.Decode(bytes.NewReader(raw))
+	if err != nil {
+		return nil, fmt.Errorf("png decode: %w", err)
+	}
+	b := img.Bounds()
+	rgba := image.NewRGBA(image.Rect(0, 0, b.Dx(), b.Dy()))
+	draw.Draw(rgba, rgba.Bounds(), img, b.Min, draw.Src)
+	return rgba, nil
+}
+
+func (s *ScreenshotService) CopyAnnotatedPNG(pngBase64 string) (string, error) {
+	rgba, err := decodePNGBase64(pngBase64)
+	if err != nil {
+		return "", err
+	}
+	return s.finishCopy(rgba)
+}
+
+func (s *ScreenshotService) SaveAnnotatedPNG(pngBase64 string) (string, error) {
+	rgba, err := decodePNGBase64(pngBase64)
+	if err != nil {
+		return "", err
+	}
+	return s.finishSave(rgba)
 }
 
 func downloadsDir() (string, error) {
@@ -253,14 +311,6 @@ func (t *ScreenshotService) ServiceStartup(ctx context.Context, _ application.Se
 	t.watchUpdaterProgress()
 	t.applyLoadSettings()
 	cleanupTempShots()
-	if t.overlayWin == nil {
-		bounds := screenshot.GetDisplayBounds(0)
-		scale := 1.0
-		if scr := t.app.Screen.GetPrimary(); scr != nil && scr.ScaleFactor > 0 {
-			scale = float64(scr.ScaleFactor)
-		}
-		t.ensureOverlayWindow(bounds, scale)
-	}
 	t.app.Event.On("overlay:background-ready", func(_ *application.CustomEvent) {
 		if t.everShown.CompareAndSwap(false, true) {
 			log.Printf("overlay:background-ready → ilk gösterim")
@@ -283,7 +333,25 @@ func (t *ScreenshotService) ServiceStartup(ctx context.Context, _ application.Se
 	go t.startGlobalHotkey()
 
 	go t.startAltTabBlocker()
+
+	go func() {
+		time.Sleep(10 * time.Second)
+		t.maybePrewarmOverlay()
+	}()
 	return nil
+}
+
+func (s *ScreenshotService) maybePrewarmOverlay() {
+	if s.overlayWin != nil || !s.GetSettings().PrewarmOverlay {
+		return
+	}
+	bounds := screenshot.GetDisplayBounds(0)
+	scale := 1.0
+	if scr := s.app.Screen.GetPrimary(); scr != nil && scr.ScaleFactor > 0 {
+		scale = float64(scr.ScaleFactor)
+	}
+	s.ensureOverlayWindow(bounds, scale)
+	log.Printf("overlay prewarmed (hidden)")
 }
 
 func (s *ScreenshotService) showOverlayNow(seq uint64) {
@@ -332,12 +400,8 @@ func (s *ScreenshotService) TriggerCapture() {
 	}
 	s.lastCapture = img
 
-	var buf bytes.Buffer
-	if err := png.Encode(&buf, img); err != nil {
-		log.Printf("sync PNG encode failed: %v", err)
-	} else {
-		s.dataURLCache.Store("data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes()))
-	}
+	s.dataURLCache.Store("")
+	s.pngDataURLCache.Store("")
 
 	reuse := s.everShown.Load()
 	if reuse {

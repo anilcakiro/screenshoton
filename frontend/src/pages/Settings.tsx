@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpCircle, Languages, Monitor, Moon, Power, RefreshCw, Sun } from "lucide-react";
+import { ArrowUpCircle, Languages, Monitor, Moon, Power, RefreshCw, Sun, Zap } from "lucide-react";
 import { Events } from "@wailsio/runtime";
 import { CheckForUpdate, DownloadUpdate, GetSettings, GetVersion, InstallUpdate, SaveSettings } from "@wails/wareon/services/screenshotservice";
 import type { AppSettings, UpdateInfo } from "@wails/wareon/services/models";
@@ -186,6 +186,35 @@ export default function Settings() {
                                     className={cn(
                                         "absolute top-0.5 size-5 rounded-full bg-white shadow transition-all duration-200",
                                         settings?.startWithWindows ? "left-[22px]" : "left-0.5",
+                                    )}
+                                />
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-3 px-4 py-3.5 sm:px-5">
+                            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-window-b/55 text-foreground/65">
+                                <Zap className="size-4" strokeWidth={1.9} />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-[13px] font-semibold tracking-[-0.01em]">{t("settings.prewarmOverlay")}</p>
+                                <p className="mt-0.5 text-[11px] leading-snug text-sdbr-disabled">
+                                    {t("settings.prewarmOverlayDesc")}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={settings?.prewarmOverlay ?? false}
+                                onClick={() => void persist({ prewarmOverlay: !(settings?.prewarmOverlay ?? false) })}
+                                className={cn(
+                                    "relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200",
+                                    settings?.prewarmOverlay ? "bg-primary" : "bg-foreground/15",
+                                )}
+                            >
+                                <span
+                                    className={cn(
+                                        "absolute top-0.5 size-5 rounded-full bg-white shadow transition-all duration-200",
+                                        settings?.prewarmOverlay ? "left-[22px]" : "left-0.5",
                                     )}
                                 />
                             </button>

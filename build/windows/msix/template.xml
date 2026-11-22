@@ -10,15 +10,15 @@
     <Installer
         Path="screenshoton.exe"
         Arguments=""
-        InstallLocation="C:\Program Files\Wareon\ScreenShotOn">
+        InstallLocation="C:\Program Files\Wareon\ScreenshotOn">
     </Installer>
     <PackageInformation
-        PackageName="ScreenShotOn"
-        PackageDisplayName="ScreenShotOn"
+        PackageName="ScreenshotOn"
+        PackageDisplayName="ScreenshotOn"
         PublisherName="CN=Wareon"
         PublisherDisplayName="Wareon"
         Version="0.1.0.0"
-        PackageDescription="A ScreenShotOn application">
+        PackageDescription="A ScreenshotOn application">
         <Capabilities>
             <Capability Name="runFullTrust" />
             
@@ -26,8 +26,8 @@
         <Applications>
             <Application
                 Id="dev.wareon.screenshoton"
-                Description="A ScreenShotOn application"
-                DisplayName="ScreenShotOn"
+                Description="A ScreenshotOn application"
+                DisplayName="ScreenshotOn"
                 ExecutableName="screenshoton.exe"
                 EntryPoint="Windows.FullTrustApplication">
                 
@@ -41,9 +41,9 @@
         </Dependencies>
         <Properties>
             <Framework>false</Framework>
-            <DisplayName>ScreenShotOn</DisplayName>
+            <DisplayName>ScreenshotOn</DisplayName>
             <PublisherDisplayName>Wareon</PublisherDisplayName>
-            <Description>A ScreenShotOn application</Description>
+            <Description>A ScreenshotOn application</Description>
             <Logo>Assets\AppIcon.png</Logo>
         </Properties>
     </PackageInformation>

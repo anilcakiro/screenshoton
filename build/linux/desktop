@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
-Name=ScreenShotOn
-Comment=A ScreenShotOn application
+Name=ScreenshotOn
+Comment=A ScreenshotOn application
 # The Exec line includes %u to pass the URL to the application
 Exec=/usr/local/bin/screenshoton.exe %u
 Terminal=false

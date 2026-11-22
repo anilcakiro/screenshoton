@@ -7,9 +7,9 @@
     <key>CFBundleIdentifier</key>
     <string>dev.wareon.screenshoton</string>
     <key>CFBundleName</key>
-    <string>ScreenShotOn</string>
+    <string>ScreenshotOn</string>
     <key>CFBundleDisplayName</key>
-    <string>ScreenShotOn</string>
+    <string>ScreenshotOn</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

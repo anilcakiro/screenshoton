@@ -142,6 +142,15 @@ export default function Home() {
         };
     }, [fetchHistory]);
 
+    useEffect(() => {
+        if (!confirmClear) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setConfirmClear(false);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [confirmClear]);
+
     const seenPaths = useRef<Set<string> | null>(null);
     const [freshPaths, setFreshPaths] = useState<Set<string>>(new Set());
     useEffect(() => {
@@ -243,26 +252,6 @@ export default function Home() {
                                     <LayoutGrid className="size-3.5" />
                                 </button>
                             </div>
-                            {confirmClear ? (
-                            <div className="flex items-center gap-2 rounded-lg border border-red-500/25 bg-red-500/5 px-3 py-2">
-                                <span className="text-xs text-sdbr-disabled">{t("home.sureDelete")}</span>
-                                <button
-                                    onClick={() => {
-                                        void clearAll();
-                                        setConfirmClear(false);
-                                    }}
-                                    className="rounded-md bg-red-500 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-600"
-                                >
-                                    {t("home.yesDelete")}
-                                </button>
-                                <button
-                                    onClick={() => setConfirmClear(false)}
-                                    className="rounded-md px-2 py-1.5 text-xs text-sdbr-disabled transition-colors hover:bg-window-b"
-                                >
-                                    {t("common.cancel")}
-                                </button>
-                            </div>
-                        ) : (
                             <button
                                 onClick={() => setConfirmClear(true)}
                                 className="flex items-center gap-1.5 rounded-lg border border-window-b px-3 py-2 text-xs font-medium text-sdbr-disabled transition-all hover:border-red-500/40 hover:text-red-500"
@@ -270,7 +259,6 @@ export default function Home() {
                                 <Trash2 className="size-3.5" />
                                 {t("home.clearAll")}
                             </button>
-                            )}
                         </div>
                     )}
                 </div>
@@ -369,6 +357,47 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            {confirmClear && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center animate-in fade-in duration-150"
+                    onClick={() => setConfirmClear(false)}
+                >
+                    <div
+                        className="w-[340px] rounded-2xl border border-window-b bg-card p-5 shadow-2xl animate-in zoom-in-95 duration-150"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center gap-3">
+                            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-red-500/10 text-red-500">
+                                <Trash2 className="size-5" />
+                            </span>
+                            <div className="min-w-0">
+                                <p className="text-sm font-semibold">{t("home.clearAllTitle")}</p>
+                                <p className="mt-0.5 text-xs leading-snug text-sdbr-disabled">
+                                    {t("home.clearAllDesc", { count: items?.length ?? 0 })}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex justify-end gap-2">
+                            <button
+                                onClick={() => setConfirmClear(false)}
+                                className="rounded-lg border border-window-b px-4 py-2 text-xs font-medium text-foreground/80 transition-colors hover:bg-window-b/50"
+                            >
+                                {t("common.cancel")}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    void clearAll();
+                                    setConfirmClear(false);
+                                }}
+                                className="rounded-lg bg-red-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-red-600"
+                            >
+                                {t("home.yesDelete")}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {viewer && (
                 <div

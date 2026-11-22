@@ -7,6 +7,9 @@ import { useTranslation } from "react-i18next";
 import { cn } from "cn";
 import { Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebarStore, SidebarFooter } from "@wareon/sidebar";
 import { useSidebarStore as useAppMenuStore } from "@stores/sidebar";
+import { useUiStore } from "@stores/ui";
+import logoLightTheme from "@assets/images/light.png";
+import logoDarkTheme from "@assets/images/darkt.png";
 
 const MENU_LABEL_KEYS: Record<string, string> = {
     Dashboard: "nav.dashboard",
@@ -23,6 +26,7 @@ export default function AppSidebar() {
     const navigate = useNavigate();
     const menu = useAppMenuStore((s) => s.menu);
     const sidebarOpen = useSidebarStore((s) => s.open);
+    const theme = useUiStore((s) => s.theme);
     const manualOpen = useSidebarStore((s) => s.manualOpen);
     const setManualOpen = useSidebarStore((s) => s.setManualOpen);
     const toggleOpen = useSidebarStore((s) => s.toggleOpen);
@@ -39,11 +43,7 @@ export default function AppSidebar() {
         const el = btnRefs.current.get(itemId);
         if (!el) return;
         const r = el.getBoundingClientRect();
-        setDrop((d) =>
-            d?.id === itemId
-                ? null
-                : { id: itemId, top: Math.min(r.top, window.innerHeight - 220), left: r.right + 10 },
-        );
+        setDrop((d) => (d?.id === itemId ? null : { id: itemId, top: Math.min(r.top, window.innerHeight - 220), left: r.right + 10 }));
     };
 
     React.useEffect(() => {
@@ -69,17 +69,8 @@ export default function AppSidebar() {
         };
     }, [drop]);
 
-    const isRouteActiveRow = (m: { href?: string; children?: Array<{ href?: string }> }) =>
-        m.href === pathname || Boolean(m.children?.some((c) => c.href === pathname));
-    const pillTargetId =
-        menu.find(isRouteActiveRow)?.id ??
-        menu.find(
-            (m) =>
-                Boolean(m.children?.length) &&
-                sidebarOpen &&
-                Boolean(manualOpen[m.id] ?? m.children?.some((c) => c.href === pathname)),
-        )?.id ??
-        null;
+    const isRouteActiveRow = (m: { href?: string; children?: Array<{ href?: string }> }) => m.href === pathname || Boolean(m.children?.some((c) => c.href === pathname));
+    const pillTargetId = menu.find(isRouteActiveRow)?.id ?? menu.find((m) => Boolean(m.children?.length) && sidebarOpen && Boolean(manualOpen[m.id] ?? m.children?.some((c) => c.href === pathname)))?.id ?? null;
     const measure = React.useCallback(() => {
         const el = activeRef.current;
         const next = { y: el ? el.offsetTop : 0, h: el ? el.offsetHeight : 0, visible: Boolean(el) };
@@ -115,7 +106,26 @@ export default function AppSidebar() {
     }, [measure, pathname, menu, manualOpen, sidebarOpen]);
     return (
         <Sidebar>
-            <SidebarHeader className="font-bold">ScreenShotOn</SidebarHeader>
+            <SidebarHeader className="font-bold px-4 h-16.25">
+                <img
+                    src={theme === "dark" ? logoDarkTheme : logoLightTheme}
+                    draggable={false}
+                    className="size-9.5 shrink-0 rounded-lg"
+                />
+                <AnimatePresence initial={false}>
+                    {sidebarOpen && (
+                        <motion.span
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -8 }}
+                            transition={{ duration: 0.16 }}
+                            className="whitespace-nowrap"
+                        >
+                            ScreenshotOn
+                        </motion.span>
+                    )}
+                </AnimatePresence>
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarMenu ref={menuRef} className="relative">
                     <motion.span
@@ -280,7 +290,7 @@ export default function AppSidebar() {
                                     animate={{ opacity: 1, x: 0, scale: 1 }}
                                     exit={{ opacity: 0, x: -8, scale: 0.97 }}
                                     transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                                    className="ml-0.5 fixed z-50 w-auto origin-left overflow-hidden rounded-l-none rounded-2xl border-l-0 border border-window-b bg-dl/85 p-1.5  backdrop-blur-xl"
+                                    className="ml-0.5 fixed z-50 w-auto origin-left overflow-hidden rounded-l-none rounded-2xl bg-card border-l-0 border border-window-b p-1.5  backdrop-blur-xl"
                                     style={{ top: drop.top, left: drop.left }}
                                     role="menu"
                                 >
@@ -306,27 +316,13 @@ export default function AppSidebar() {
                                                         <span
                                                             className={cn(
                                                                 "grid size-7 shrink-0 place-items-center rounded-lg transition-colors duration-150",
-                                                                subActive
-                                                                    ? "bg-primary/15 text-primary"
-                                                                    : "bg-window-b/50 text-sdbr-disabled group-hover:bg-primary/10 group-hover:text-primary",
+                                                                subActive ? "bg-primary/15 text-primary" : "bg-window-b/50 text-sdbr-disabled group-hover:bg-primary/10 group-hover:text-primary",
                                                             )}
                                                         >
                                                             <SubIcon className="size-3.5" />
                                                         </span>
-                                                    ) : (
-                                                        <span
-                                                            className={cn(
-                                                                "size-1.5 shrink-0 rounded-full transition-colors",
-                                                                subActive ? "bg-primary" : "bg-sdbr-disabled/40 group-hover:bg-primary/60",
-                                                            )}
-                                                        />
-                                                    )}
-                                                    <span
-                                                        className={cn(
-                                                            "truncate text-[12.5px] font-medium transition-colors",
-                                                            subActive ? "text-primary" : "text-foreground/80 group-hover:text-foreground",
-                                                        )}
-                                                    >
+                                                    ) : (<></>)}
+                                                    <span className={cn("truncate text-[12.5px] font-medium transition-colors", subActive ? "text-primary" : "text-foreground/80 group-hover:text-foreground")}>
                                                         {tl(sub.label)}
                                                     </span>
                                                 </button>
@@ -339,7 +335,6 @@ export default function AppSidebar() {
                     })(),
                     document.body,
                 )}
-
         </Sidebar>
     );
 }
