@@ -151,9 +151,3 @@ sha256sum ScreenshotOn-Update-windows-amd64.exe > SHA256SUMS
 ```
 
 Tag'lemeden önce `services/update.go` içindeki `AppVersion`'ı yükseltin; updater karşılaştırmayı buna göre yapar.
-
-## Lisans
-
-Bu proje **source-available** özel lisans altındadır. Yazılımı kişisel ve ticari amaçlarla kullanabilir, inceleyebilir, indirebilir ve build alabilirsiniz; ancak yazılımın, binary'lerinin, installer'larının veya değiştirilmiş sürümlerinin **satışı, yeniden dağıtımı ve yayınlanması yasaktır**.
-
-Tam metin için [LICENSE](LICENSE) dosyasına bakın. Lisans soruları için: https://wareon.dev
