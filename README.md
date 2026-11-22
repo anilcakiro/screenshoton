@@ -1,4 +1,5 @@
 # ScreenshotOn
+<img width="1017" height="638" alt="image" src="https://github.com/user-attachments/assets/c7d86f72-561b-4c9b-852b-e398477fb7b3" />
 
 A fast, lightweight screenshot tool for Windows.
 
