@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 type AppSettings struct {
@@ -238,7 +240,9 @@ func (s *ScreenshotService) applyStartupSetting(enabled bool) {
 		return
 	}
 	if enabled {
-		if err := s.app.Autostart.Enable(); err != nil {
+		if err := s.app.Autostart.EnableWithOptions(application.AutostartOptions{
+			Arguments: []string{"--tray"},
+		}); err != nil {
 			log.Printf("autostart enable: %v", err)
 		}
 		return

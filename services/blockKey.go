@@ -16,6 +16,8 @@ const (
 	altVKTab        = 0x09
 	altVKEscape     = 0x1B
 	altVKMenu       = 0x12
+	altVKLWin       = 0x5B
+	altVKRWin       = 0x5C
 	altLLKHFUp      = 0x80
 	altWMQuit       = 0x0012
 )
@@ -64,6 +66,9 @@ func altLowLevelHook(nCode int32, wParam uintptr, lParam uintptr) uintptr {
 			} else {
 				altPhysicallyHeld.Store(true)
 			}
+			return 1
+		}
+		if k.vkCode == altVKLWin || k.vkCode == altVKRWin {
 			return 1
 		}
 		if (k.vkCode == altVKTab || k.vkCode == altVKEscape) && altPhysicallyHeld.Load() {

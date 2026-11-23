@@ -389,6 +389,7 @@ func (s *ScreenshotService) TriggerCapture() {
 		t.Stop()
 		s.pendingCloseHide.Store(nil)
 	}
+	dismissShellSurfaces()
 	seq := s.sessionSeq.Add(1)
 
 	start := time.Now()

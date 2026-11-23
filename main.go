@@ -2,12 +2,15 @@ package main
 
 import (
 	"embed"
+	"os"
+	"slices"
 
 	"log"
 
 	"wareon/services"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 	"github.com/wailsapp/wails/v3/pkg/updater"
 	"github.com/wailsapp/wails/v3/pkg/updater/providers/github"
 )
@@ -60,12 +63,14 @@ func main() {
 		log.Printf("updater provider: %v", err)
 	}
 
+	startHidden := slices.Contains(os.Args[1:], "--tray")
 	window = app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:             "Dashboard",
 		Width:             1000,
 		Height:            618,
 		BackgroundColour:  application.NewRGB(6, 7, 15),
 		URL:               "/",
+		Hidden:            startHidden,
 		Frameless:         true,
 		BackgroundType:    application.BackgroundTypeTransparent,
 		DisableResize:     true,
@@ -78,6 +83,12 @@ func main() {
 
 	systray := app.SystemTray.New()
 	systray.SetIcon(icon)
+	window.OnWindowEvent(events.Common.WindowHide, func(*application.WindowEvent) {
+		systray.Show()
+	})
+	window.OnWindowEvent(events.Common.WindowShow, func(*application.WindowEvent) {
+		systray.Hide()
+	})
 	systray.OnClick(func() {
 		if window.IsVisible() {
 			window.Hide()

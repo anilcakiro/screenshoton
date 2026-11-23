@@ -11,7 +11,7 @@ info:
   description: "Fast screenshot tool for Windows — select, copy, save, and browse your capture history"
   copyright: "© 2026, Wareon"
   comments: "https://wareon.dev"
-  version: "1.0.0"
+  version: "1.0.3"
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"
